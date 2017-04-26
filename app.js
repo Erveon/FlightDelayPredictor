@@ -9,16 +9,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
-let database = require('./lib/database');
-let network = require('./lib/neuralnet');
-network.onDone(() => {
-	database.getRandomRecords(5, docs => {
-		docs.forEach(doc => {
-			let guess = network.getBrain().predict(network.convert(doc));
-			console.log("Guessing delay: " + guess + ". Actual delay: " + doc.departure_delay);
-		});
-	});
+const dataLoader = require('./lib/dataloader');
+dataLoader.loadData(() => {
+	dataLoader.printData();
 });
 
 app.set('views', path.join(__dirname, 'views'));
@@ -29,10 +22,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('node-sass-middleware')({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: true,
-  sourceMap: true
+	src: path.join(__dirname, 'public'),
+	dest: path.join(__dirname, 'public'),
+	indentedSyntax: true,
+	sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -41,9 +34,9 @@ app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handlers

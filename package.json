@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --max_old_space_size=12000 ./bin/www"
+    "start": "node --max-old-space-size=12000 ./bin/www"
   },
   "dependencies": {
     "assert": "^1.4.1",
@@ -11,10 +11,12 @@
     "brain": "^0.7.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
+    "decision-tree": "^0.3.1",
     "ejs": "~2.4.1",
     "express": "~4.13.4",
     "mongodb": "^2.2.26",
     "morgan": "~1.7.0",
+    "nn": "0.0.6",
     "node-sass-middleware": "0.8.0",
     "serve-favicon": "~2.3.0"
   }
