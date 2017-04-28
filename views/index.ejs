@@ -1,11 +1,95 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>Flight Delays</title>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
+	<link rel="stylesheet" href="/stylesheets/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" charset="utf-8"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" charset="utf-8"></script>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+	<header id="top" class="header">
+		<div class="text-vertical-center">
+			<h1>How much delay could your flight have?</h1>
+			<br />
+			<form>
+				<div class="form-group">
+				    <label for="datepicker">Date</label>
+					<div class="input-group date datepicker">
+					    <input type="text" class="form-control pickeddate">
+					    <div class="input-group-addon">
+					        <span class="glyphicon glyphicon-th"></span>
+					    </div>
+					</div>
+				</div>
+				<div class="form-group">
+				    <label for="airline">Airline</label>
+				    <select class="form-control" id="airline">
+						<% for(let airline in airlines) { %>
+							if(airlines[airline] !== 'undefined')%>
+							<option><%= airlines[airline] %></option>
+						<% } %>
+				    </select>
+				</div>
+				<div class="form-group">
+				    <label for="from">From</label>
+				    <select class="form-control" id="from">
+						<% for(let airport in airports) { %>
+							if(airports[airport] !== 'undefined')%>
+							<option><%= airports[airport] %></option>
+						<% } %>
+				    </select>
+				</div>
+				<div class="form-group">
+				    <label for="to">To</label>
+				    <select class="form-control" id="to">
+						<% for(let airport in airports) {
+							if(airports[airport] !== 'undefined')%>
+							<option><%= airports[airport] %></option>
+						<% } %>
+				    </select>
+				</div>
+			</form>
+			<br />
+			<a href="#" class="btn btn-dark btn-lg finddelay">Find Out Now</a>
+			<br />
+			<small id="emailHelp" class="form-text text-muted">Generated results are based on previous delays and may not be completely accurate</small>
+		</div>
+	</header>
+	<script type="text/javascript">
+		$('.datepicker').datepicker({
+		    format: 'dd/mm/yyyy'
+		});
+		$(".finddelay").on('click', function() {
+			var date = $('.pickeddate').val().trim();
+			var day, month;
+			if(date === '') {
+				var d = new Date();
+				day = d.getDate();
+				month = d.getMonth() + 1;
+			} else {
+				split = date.split("\/");
+				day = parseInt(split[0]);
+				month = parseInt(split[1]);
+			}
+			var airline = $('#airline').val();
+			var from = $('#from').val();
+			var to = $("#to").val();
+			if(to === from) {
+				$("h1").html("You're already at that airport, dummy");
+			} else {
+				$.get("/delay", { from: from, to: to, airline: airline, day: day, month: month }).done(function(data) {
+					console.log(data);
+					if(data.delay === null) {
+						$("h1").html("No accurate prediction found :(");
+					} else {
+						$("h1").html("Your flight could have " + data.delay + " minutes delay.");
+					}
+				});
+			}
+		});
+	</script>
   </body>
 </html>

@@ -11,7 +11,7 @@ var users = require('./routes/users');
 var app = express();
 const dataLoader = require('./lib/dataloader');
 dataLoader.loadData(() => {
-	dataLoader.printData();
+	dataLoader.test(10000, 10);
 });
 
 app.set('views', path.join(__dirname, 'views'));
